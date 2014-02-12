@@ -156,5 +156,7 @@ public:
     
     yarp::os::Network yarp;
     yarp::os::BufferedPort<yarp::os::Bottle> port;
+    yarp::os::Bottle *output;
+    bool bYarpPortOpen;
     
 };

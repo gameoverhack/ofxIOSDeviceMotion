@@ -181,7 +181,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				532A1F1118AB00B20061291D /* libc++.dylib */,
 				678E130917951536005B6D19 /* Icon.png */,
 				678E130717951530005B6D19 /* Icon@2x.png */,
 				678E130B1795153C005B6D19 /* Default.png */,
@@ -290,6 +289,7 @@
 		BB16E9930F2B1E5900518274 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				532A1F1118AB00B20061291D /* libc++.dylib */,
 				5378361D18AAF4FD00137F85 /* libACE.a */,
 				5378361E18AAF4FD00137F85 /* libYARP_init.a */,
 				5378361F18AAF4FD00137F85 /* libYARP_OS.a */,

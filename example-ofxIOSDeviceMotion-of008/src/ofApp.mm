@@ -4,16 +4,14 @@
 void ofApp::setup(){	
 	
     sampleRate = 60.0;
-    ipAddress = "192.168.1.83";
+    ipAddress = "10.0.1.14";
     ipPort = 6666;
     
     
     yarp::os::impl::NameConfig nc;
-    nc.setManualConfig("10.0.1.3", 10000);
+    nc.setManualConfig("10.0.1.14", 10000);
     
-    port.open("/wohoo");
-
-    
+    bYarpPortOpen = port.open("/yarpMotion");
     
 	//force landscape oreintation 
 	ofSetOrientation(OF_ORIENTATION_90_RIGHT);
@@ -150,6 +148,17 @@ void ofApp::update(){
     m.addFloatArg(uacceleration.z);
     
     oscSender.sendMessage(m);
+    
+    if (!bYarpPortOpen)
+        return;
+    
+    output = &port.prepare();
+    output->clear();
+    output->addString("/device");
+    output->addDouble(acceleration.x);
+    output->addDouble(acceleration.y);
+    output->addDouble(acceleration.z);
+    port.write();
 }
 
 //--------------------------------------------------------------
