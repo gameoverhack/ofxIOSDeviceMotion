@@ -7,6 +7,14 @@ void ofApp::setup(){
     ipAddress = "192.168.1.83";
     ipPort = 6666;
     
+    
+    yarp::os::impl::NameConfig nc;
+    nc.setManualConfig("10.0.1.3", 10000);
+    
+    port.open("/wohoo");
+
+    
+    
 	//force landscape oreintation 
 	ofSetOrientation(OF_ORIENTATION_90_RIGHT);
     
@@ -201,6 +209,8 @@ void ofApp::drawVector(float x, float y, float scale, vector<ofPoint> & vec, str
 
 //--------------------------------------------------------------
 void ofApp::exit(){
+    
+    port.close();
 
 }
 
