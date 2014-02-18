@@ -8,10 +8,20 @@ void ofApp::setup(){
     ipPort = 6666;
     
     
-    yarp::os::impl::NameConfig nc;
-    nc.setManualConfig("10.0.1.14", 10000);
+    //get clientID (currently last digit of IP address)
+    vector<string> ipPartsClient = ofSplitString(getIPAddress(), ".");
+    clientID = ofToInt(ipPartsClient[ipPartsClient.size() - 1]);
     
-    bYarpPortOpen = port.open("/yarpMotion");
+    //manual yarp namespace configuration
+    yarp::os::impl::NameConfig nc;
+    nc.setManualConfig("10.0.1.104", 10000);
+    
+    string clientIDs = "/iOSClient"+ofToString(clientID);
+    bYarpPortOpen = port.open(clientIDs.c_str());
+    
+    
+    //yarp connect command (expects dest port to exist!!)
+    yarp::os::NetworkBase::connect(clientIDs.c_str(), "/motionReceiver");
     
 	//force landscape oreintation 
 	ofSetOrientation(OF_ORIENTATION_90_RIGHT);
@@ -24,7 +34,7 @@ void ofApp::setup(){
     
     bShowInfo = false;
     bShowHistory = true;
-    
+
     // setup simple buttons
     float tSize = (float)ofGetHeight() / 3.0;
     
@@ -116,6 +126,7 @@ void ofApp::update(){
         attitudeHistory.push_back(attitude);
     }
     
+    /*
     if(!bOscIsSetup) return;
     
     ofxOscMessage m;
@@ -148,16 +159,45 @@ void ofApp::update(){
     m.addFloatArg(uacceleration.z);
     
     oscSender.sendMessage(m);
+    */
     
     if (!bYarpPortOpen)
         return;
     
     output = &port.prepare();
     output->clear();
+    
     output->addString("/device");
     output->addDouble(acceleration.x);
     output->addDouble(acceleration.y);
     output->addDouble(acceleration.z);
+    
+    output->addInt(clientID);
+    output->addInt(PHONETYPE_IPHONE);
+    output->addInt(SERVERTYPE_MATTG);
+    
+    output->addInt(ofGetElapsedTimeMillis());
+    
+    output->addDouble(acceleration.x);
+    output->addDouble(acceleration.y);
+    output->addDouble(acceleration.z);
+    
+    output->addDouble(rotation.x);
+    output->addDouble(rotation.y);
+    output->addDouble(rotation.z);
+    
+    output->addDouble(attitude.x);
+    output->addDouble(attitude.y);
+    output->addDouble(attitude.z);
+    
+    output->addDouble(gravity.x);
+    output->addDouble(gravity.y);
+    output->addDouble(gravity.z);
+    
+    output->addDouble(uacceleration.x);
+    output->addDouble(uacceleration.y);
+    output->addDouble(uacceleration.z);
+    
     port.write();
 }
 
@@ -195,22 +235,24 @@ void ofApp::drawVector(float x, float y, float scale, vector<ofPoint> & vec, str
     ofTranslate(x, y);
     ofNoFill();
     ofSetColor(255, 255, 255);
+    int skip = 1; //increase for drawing performance on slower devices
     ofDrawBitmapString(label, 20.0f, -20.0f);
-    for(int i = 0; i < vec.size() - 1; i++){
+    for(int i = 0; i < vec.size() - 1; i+=skip){
+        int dx = i/skip;
         ofPushMatrix();
         ofTranslate(0, scale * 0);
         ofSetColor(255, 0, 0);
-        ofLine(i, vec[i].x * scale, i + 1, vec[i + 1].x * scale);
+        ofLine(dx, vec[i].x * scale, dx + 1, vec[i + 1].x * scale);
         ofPopMatrix();
         ofPushMatrix();
         ofTranslate(0, scale * 1);
         ofSetColor(0, 255, 0);
-        ofLine(i, vec[i].y * scale, i + 1, vec[i + 1].y * scale);
+        ofLine(dx, vec[i].y * scale, dx + 1, vec[i + 1].y * scale);
         ofPopMatrix();
         ofPushMatrix();
         ofTranslate(0, scale * 2);
         ofSetColor(0, 0, 255);
-        ofLine(i, vec[i].z * scale, i + 1, vec[i + 1].z * scale);
+        ofLine(dx, vec[i].z * scale, dx + 1, vec[i + 1].z * scale);
         ofPopMatrix();
     }
     ofPopMatrix();

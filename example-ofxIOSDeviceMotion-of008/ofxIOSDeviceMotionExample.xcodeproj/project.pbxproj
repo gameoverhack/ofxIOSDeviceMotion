@@ -426,6 +426,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0460;
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB54 = {
+						DevelopmentTeam = LZN89SNXCL;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ofxIOSDeviceMotionExample" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -535,6 +540,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ofxiOS_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
@@ -559,6 +566,7 @@
 					"/Users/johnty/Documents/of_v0.8.0_ios_release/apps/myApps/yarp-of-ios",
 				);
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv6 armv7";
 			};
 			name = Debug;
@@ -566,6 +574,8 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ofxiOS_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
@@ -590,6 +600,7 @@
 					"/Users/johnty/Documents/of_v0.8.0_ios_release/apps/myApps/yarp-of-ios",
 				);
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv6 armv7";
 			};
 			name = Release;
