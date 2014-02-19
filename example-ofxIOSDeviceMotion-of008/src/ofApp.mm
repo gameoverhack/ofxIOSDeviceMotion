@@ -8,14 +8,15 @@ void ofApp::setup(){
     ipPort = 6666;
     
     
-    //get clientID (currently last digit of IP address)
-    vector<string> ipPartsClient = ofSplitString(getIPAddress(), ".");
-    clientID = ofToInt(ipPartsClient[ipPartsClient.size() - 1]);
+
     
     //manual yarp namespace configuration
     yarp::os::impl::NameConfig nc;
     nc.setManualConfig("10.0.1.104", 10000);
-    
+
+    //get clientID (currently last digit of IP address)
+    vector<string> ipPartsClient = ofSplitString(getIPAddress(), ".");
+    clientID = ofToInt(ipPartsClient[ipPartsClient.size() - 1]);
     string clientIDs = "/iOSClient"+ofToString(clientID);
     bYarpPortOpen = port.open(clientIDs.c_str());
     
@@ -168,9 +169,6 @@ void ofApp::update(){
     output->clear();
     
     output->addString("/device");
-    output->addDouble(acceleration.x);
-    output->addDouble(acceleration.y);
-    output->addDouble(acceleration.z);
     
     output->addInt(clientID);
     output->addInt(PHONETYPE_IPHONE);
@@ -285,6 +283,19 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     btnRecord.mousePressed(touch.x, touch.y);
     
     if(btnRecord.getState()){
+        
+        output = &port.prepare();
+        output->clear();
+        output->addString("/record");
+        output->addInt(clientID);
+        output->addInt(PHONETYPE_IPHONE);
+        output->addInt(SERVERTYPE_MATTG);
+        output->addInt(ofGetElapsedTimeMillis());
+        output->addInt(1);
+        port.write();
+        
+        return; //ignore osc stuff
+        
         ofxOscMessage m;
         m.setAddress("/record");
         m.addIntArg(clientID);
@@ -297,6 +308,19 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     
     if(btnReset.getState()){
         motion.calibrate();
+        
+        
+        output = &port.prepare();
+        output->clear();
+        output->addString("/reset");
+        output->addInt(clientID);
+        output->addInt(PHONETYPE_IPHONE);
+        output->addInt(SERVERTYPE_MATTG);
+        output->addInt(ofGetElapsedTimeMillis());
+        port.write();
+        
+        return; //ignore osc stuff
+        
         ofxOscMessage m;
         m.setAddress("/reset");
         m.addIntArg(clientID);
