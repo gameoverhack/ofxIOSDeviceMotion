@@ -292,6 +292,7 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
         output->addInt(SERVERTYPE_MATTG);
         output->addInt(ofGetElapsedTimeMillis());
         output->addInt(1);
+        while (port.isWriting());// we want to wait until port is done!
         port.write();
         
         return; //ignore osc stuff
@@ -317,6 +318,7 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
         output->addInt(PHONETYPE_IPHONE);
         output->addInt(SERVERTYPE_MATTG);
         output->addInt(ofGetElapsedTimeMillis());
+        while (port.isWriting()); // we want to wait until port is done!
         port.write();
         
         return; //ignore osc stuff
