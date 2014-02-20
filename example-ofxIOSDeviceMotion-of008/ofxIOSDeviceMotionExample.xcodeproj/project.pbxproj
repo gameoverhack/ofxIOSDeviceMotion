@@ -186,6 +186,7 @@
 				678E130B1795153C005B6D19 /* Default.png */,
 				678E130D17951540005B6D19 /* Default@2x.png */,
 				678E130F17951549005B6D19 /* Default-568h@2x~iphone.png */,
+				E41D3ED613B38FB500A75A5D /* Project.xcconfig */,
 				E4D8936A11527B74007E1F53 /* src */,
 				BB24E1F710DAA51900E9C588 /* openFrameworks */,
 				BB16F26B0F2B646B00518274 /* addons */,
@@ -314,7 +315,6 @@
 				32CA4F630368D1EE00C91783 /* ofxiOS_Prefix.pch */,
 				BB24DDC910DA781C00E9C588 /* ofxiOS-Info.plist */,
 				E41D3EE513B3906D00A75A5D /* CoreOF.xcconfig */,
-				E41D3ED613B38FB500A75A5D /* Project.xcconfig */,
 			);
 			name = openFrameworks;
 			sourceTree = "<group>";
@@ -556,14 +556,14 @@
 					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
 					../../../addons/ofxOsc/libs/oscpack/src/osc,
 					../../../addons/ofxOsc/src,
-					/Users/johnty/Documents/ACE_wrappers_iOS,
-					"/Users/johnty/Documents/yarp-2.3.22_iOS/src/libYARP_OS_iOS/include",
-					"/Users/johnty/Documents/yarp-2.3.22_iOS/generated_include",
+					"$(ACE_ROOT)",
+					"$(YARP_DIR)/src/libYARP_OS/include",
+					"$(YARP_DIR)/generated_include",
 				);
 				INFOPLIST_FILE = "ofxiOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../lib",
 					"$(inherited)",
-					"/Users/johnty/Documents/of_v0.8.0_ios_release/apps/myApps/yarp-of-ios",
 				);
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
@@ -590,14 +590,14 @@
 					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
 					../../../addons/ofxOsc/libs/oscpack/src/osc,
 					../../../addons/ofxOsc/src,
-					/Users/johnty/Documents/ACE_wrappers_iOS,
-					"/Users/johnty/Documents/yarp-2.3.22_iOS/src/libYARP_OS_iOS/include",
-					"/Users/johnty/Documents/yarp-2.3.22_iOS/generated_include",
+					"$(ACE_ROOT)",
+					"$(YARP_DIR)/src/libYARP_OS/include",
+					"$(YARP_DIR)/generated_include",
 				);
 				INFOPLIST_FILE = "ofxiOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../lib",
 					"$(inherited)",
-					"/Users/johnty/Documents/of_v0.8.0_ios_release/apps/myApps/yarp-of-ios",
 				);
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
