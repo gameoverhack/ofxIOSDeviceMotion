@@ -82,8 +82,11 @@
     NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
     if(self.deviceMotionAvailable && bUseDeviceMotion){
         NSLog(@"Using Device Motion updates");
-//      [self startDeviceMotionUpdatesToQueue:queue withHandler:
-        [self startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryCorrectedZVertical toQueue:[NSOperationQueue currentQueue] withHandler:
+        
+        //johnty note: CMAttitudeReferenceFrameXArbitraryCorrectedZVertical ... works with iPhones (with magnetometers only! use the first line if using iTouch devices!
+        
+      [self startDeviceMotionUpdatesToQueue:queue withHandler:
+//        [self startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryCorrectedZVertical toQueue:[NSOperationQueue currentQueue] withHandler:
          ^(CMDeviceMotion *motionData, NSError *error){
              if (error) {
                  [self stopDeviceMotionUpdates];
