@@ -4,15 +4,13 @@
 void ofApp::setup(){	
 	
     sampleRate = 60.0;
-    ipAddress = "10.0.1.14";
-    ipPort = 6666;
-    
-    
-
+    //ipAddress = "10.0.1.14";
+    //ipPort = 6666;
     
     //manual yarp namespace configuration
     yarp::os::impl::NameConfig nc;
     nc.setManualConfig("10.0.1.104", 10000);
+    //nc.setManualConfig("192.168.0.11", 10000);
 
     //get clientID (currently last digit of IP address)
     vector<string> ipPartsClient = ofSplitString(getIPAddress(), ".");
@@ -58,8 +56,8 @@ void ofApp::setup(){
     keyboard->setText(ipAddress + ":" + ofToString(ipPort));
     
     // setup osc
-    ofLogNotice() << "Connecting to OSC server at:" << ipAddress << ":" << ipPort << endl;
-    oscSender.setup(ipAddress, ipPort);
+    //ofLogNotice() << "Connecting to OSC server at:" << ipAddress << ":" << ipPort << endl;
+    //oscSender.setup(ipAddress, ipPort);
     bOscIsSetup = true;
     
 	ofBackground(0, 0, 0);
@@ -207,11 +205,7 @@ void ofApp::draw(){
     btnShowInfo.draw();
     btnRecord.draw();
     
-    if(btnShowHistory.getState()){
-        drawVector(0, (ofGetHeight() / 3.0f) * 0 + 30, 20, accelerationHistory, "acceleration");
-        drawVector(0, (ofGetHeight() / 3.0f) * 1 + 30, 20, rotationHistory, "rotation");
-        drawVector(0, (ofGetHeight() / 3.0f) * 2 + 30, 20, attitudeHistory, "attitude");
-    }
+
     
     if(btnShowInfo.getState()){
         
@@ -224,36 +218,64 @@ void ofApp::draw(){
         
     }
     
+    if(btnShowHistory.getState()){
+        drawVector(0, (ofGetHeight() / 3.0f) * 0 + 30, 20, accelerationHistory, "acceleration");
+        drawVector(0, (ofGetHeight() / 3.0f) * 1 + 30, 20, rotationHistory, "rotation");
+        drawVector(0, (ofGetHeight() / 3.0f) * 2 + 30, 20, attitudeHistory, "attitude");
+    }
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::drawVector(float x, float y, float scale, vector<ofPoint> & vec, string label){
     if(vec.size() < 2) return;
+    
+    ofEnableSmoothing();
+    ofEnableAlphaBlending();
+    ofSetLineWidth(1.0f);
+    
+    ofMesh meshX;
+    ofMesh meshY;
+    ofMesh meshZ;
+    
+    meshX.setMode(OF_PRIMITIVE_LINE_STRIP);
+    meshY.setMode(OF_PRIMITIVE_LINE_STRIP);
+    meshZ.setMode(OF_PRIMITIVE_LINE_STRIP);
+    
     ofPushMatrix();
     ofTranslate(x, y);
     ofNoFill();
     ofSetColor(255, 255, 255);
-    int skip = 1; //increase for drawing performance on slower devices
     ofDrawBitmapString(label, 20.0f, -20.0f);
-    for(int i = 0; i < vec.size() - 1; i+=skip){
-        int dx = i/skip;
-        ofPushMatrix();
-        ofTranslate(0, scale * 0);
-        ofSetColor(255, 0, 0);
-        ofLine(dx, vec[i].x * scale, dx + 1, vec[i + 1].x * scale);
-        ofPopMatrix();
-        ofPushMatrix();
+    for(int i = 0; i < vec.size() - 1; i++){
+        int dx = i;
+        //ofPushMatrix();
+        //ofTranslate(0, scale * 0);
+        //ofSetColor(255, 0, 0);
+        meshX.addColor(ofColor(255,0,0));
+        meshX.addVertex(ofVec2f(dx+x, vec[i].x * scale + y));
+        //ofLine(dx, vec[i].x * scale, dx + 1, vec[i + 1].x * scale);
+        //ofPopMatrix();
+        //ofPushMatrix();
         ofTranslate(0, scale * 1);
-        ofSetColor(0, 255, 0);
-        ofLine(dx, vec[i].y * scale, dx + 1, vec[i + 1].y * scale);
-        ofPopMatrix();
-        ofPushMatrix();
-        ofTranslate(0, scale * 2);
-        ofSetColor(0, 0, 255);
-        ofLine(dx, vec[i].z * scale, dx + 1, vec[i + 1].z * scale);
-        ofPopMatrix();
+        //ofSetColor(0, 255, 0);
+        meshY.addColor(ofColor(0,255,0));
+        meshY.addVertex(ofVec2f(dx + x, vec[i].y * scale + y + scale));
+        //ofLine(dx, vec[i].y * scale, dx + 1, vec[i + 1].y * scale);
+        //ofPopMatrix();
+        //ofPushMatrix();
+        //ofTranslate(0, scale * 2);
+        //ofSetColor(0, 0, 255);
+        meshZ.addColor(ofColor(0,0,255));
+        meshZ.addVertex(ofVec2f(dx + x, vec[i].z * scale + y + 2*scale));
+        //ofLine(dx, vec[i].z * scale, dx + 1, vec[i + 1].z * scale);
+        //ofPopMatrix();
     }
     ofPopMatrix();
+    
+    meshX.draw();
+    meshY.draw();
+    meshZ.draw();
 }
 
 //--------------------------------------------------------------
@@ -349,6 +371,8 @@ void ofApp::touchUp(ofTouchEventArgs & touch){
     btnShowHistory.mouseReleased(touch.x, touch.y);
     btnShowInfo.mouseReleased(touch.x, touch.y);
     btnRecord.mouseReleased(touch.x, touch.y);
+    
+    return; //ignore OSC
     
     if(bIsRecording && !btnRecord.getState()){
         ofxOscMessage m;
