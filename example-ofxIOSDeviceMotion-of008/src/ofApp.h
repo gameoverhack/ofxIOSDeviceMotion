@@ -149,6 +149,9 @@ public:
     SimpleButton btnReset;
     SimpleButton btnShowInfo;
     SimpleButton btnShowHistory;
+    SimpleButton btnRate;
+    
+    int sendRateSkip = 1;
     
     float sampleRate;
     

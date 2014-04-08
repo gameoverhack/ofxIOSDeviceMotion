@@ -35,16 +35,18 @@ void ofApp::setup(){
     bShowHistory = true;
 
     // setup simple buttons
-    float tSize = (float)ofGetHeight() / 3.0;
+    float tSize = (float)ofGetHeight() / 4.0;
     
     btnReset.setup(ofGetWidth() - tSize, tSize * 0, tSize, tSize, "reset");
     btnShowHistory.setup(ofGetWidth() - tSize, tSize * 1, tSize, tSize, "history");
     btnShowInfo.setup(ofGetWidth() - tSize, tSize * 2, tSize, tSize, "info");
+    btnRate.setup(ofGetWidth() - tSize, tSize * 3, tSize, tSize, "rate");
     btnRecord.setup(0, 0, tSize * 2, ofGetHeight(), "record");
+
     
     btnReset.setToggle(true);
     btnRecord.setToggle(true);
-    
+    btnRate.setToggle(true);
     btnShowHistory.setState(true);
     
     // setup keyboard
@@ -116,9 +118,11 @@ void ofApp::update(){
     
     if(bShowHistory){
         
-        if(accelerationHistory.size() == ofGetWidth()) accelerationHistory.clear();
-        if(rotationHistory.size() == ofGetWidth()) rotationHistory.clear();
-        if(attitudeHistory.size() == ofGetWidth()) attitudeHistory.clear();
+        float tSize = (float)ofGetHeight() / 3.0;
+        
+        if(accelerationHistory.size() > ofGetWidth() - (int)tSize) accelerationHistory.clear();
+        if(rotationHistory.size() > ofGetWidth() - (int)tSize) rotationHistory.clear();
+        if(attitudeHistory.size() > ofGetWidth() - (int)tSize) attitudeHistory.clear();
         
         accelerationHistory.push_back(uacceleration);
         rotationHistory.push_back(rotation);
@@ -203,6 +207,7 @@ void ofApp::draw(){
     btnReset.draw();
     btnShowHistory.draw();
     btnShowInfo.draw();
+    btnRate.draw();
     btnRecord.draw();
     
 
@@ -302,6 +307,7 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     btnReset.mousePressed(touch.x, touch.y);
     btnShowHistory.mousePressed(touch.x, touch.y);
     btnShowInfo.mousePressed(touch.x, touch.y);
+    btnRate.mousePressed(touch.x, touch.y);
     btnRecord.mousePressed(touch.x, touch.y);
     
     if(btnRecord.getState()){
@@ -353,6 +359,16 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
         m.addIntArg(ofGetElapsedTimeMillis());
         oscSender.sendMessage(m);
     }
+    if (btnRate.getState()) {
+        sendRateSkip++;
+        if (sendRateSkip > 4) {
+            sendRateSkip = 1;
+        }
+        printf("sendrateskip=%i\n",sendRateSkip);
+        
+        ofSetFrameRate(60/sendRateSkip);
+        motion.setSampleRate(60/sendRateSkip);
+    }
 }
 
 //--------------------------------------------------------------
@@ -371,6 +387,7 @@ void ofApp::touchUp(ofTouchEventArgs & touch){
     btnShowHistory.mouseReleased(touch.x, touch.y);
     btnShowInfo.mouseReleased(touch.x, touch.y);
     btnRecord.mouseReleased(touch.x, touch.y);
+    btnRate.mouseReleased(touch.x, touch.y);
     
     return; //ignore OSC
     
