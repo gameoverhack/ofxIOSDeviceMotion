@@ -15,6 +15,10 @@
 		4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */; };
 		510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E6DEF695B88BA5FAACEAA937 /* UdpSocket.cpp */; };
 		5326AEA810A23A0500278DE6 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5326AEA710A23A0500278DE6 /* CoreLocation.framework */; };
+		532A1F1218AB00B20061291D /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 532A1F1118AB00B20061291D /* libc++.dylib */; };
+		5378362018AAF4FD00137F85 /* libACE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5378361D18AAF4FD00137F85 /* libACE.a */; };
+		5378362118AAF4FD00137F85 /* libYARP_init.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5378361E18AAF4FD00137F85 /* libYARP_init.a */; };
+		5378362218AAF4FD00137F85 /* libYARP_OS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5378361F18AAF4FD00137F85 /* libYARP_OS.a */; };
 		53F323EB10A20EDB00E0DAE4 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53F323EA10A20EDB00E0DAE4 /* OpenAL.framework */; };
 		5864AD82E20F15536D054EA3 /* ofxOscMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF49D76C45D5DB505A234880 /* ofxOscMessage.cpp */; };
 		62545D179C94265CA1389D4A /* OscOutboundPacketStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63A47AC60FFAFC3BF093EC0F /* OscOutboundPacketStream.cpp */; };
@@ -83,6 +87,10 @@
 		48974F980F51769171D0B2F5 /* IpEndpointName.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IpEndpointName.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h; sourceTree = SOURCE_ROOT; };
 		4E95FB446A9C9C6F0DE12D75 /* OscPrintReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPrintReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.h; sourceTree = SOURCE_ROOT; };
 		5326AEA710A23A0500278DE6 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		532A1F1118AB00B20061291D /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		5378361D18AAF4FD00137F85 /* libACE.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libACE.a; path = ../lib/libACE.a; sourceTree = "<group>"; };
+		5378361E18AAF4FD00137F85 /* libYARP_init.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libYARP_init.a; path = ../lib/libYARP_init.a; sourceTree = "<group>"; };
+		5378361F18AAF4FD00137F85 /* libYARP_OS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libYARP_OS.a; path = ../lib/libYARP_OS.a; sourceTree = "<group>"; };
 		53F323EA10A20EDB00E0DAE4 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		5928AA323F5C2690B06C837D /* UdpSocketWin.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = UdpSocketWin.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/win32/UdpSocketWin.cpp; sourceTree = SOURCE_ROOT; };
 		63A47AC60FFAFC3BF093EC0F /* OscOutboundPacketStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscOutboundPacketStream.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.cpp; sourceTree = SOURCE_ROOT; };
@@ -137,15 +145,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				532A1F1218AB00B20061291D /* libc++.dylib in Frameworks */,
 				E41D421413B3A95300A75A5D /* libofxiOS_iphoneos_Debug.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				5378362118AAF4FD00137F85 /* libYARP_init.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				BB16EBD20F2B2A9500518274 /* OpenGLES.framework in Frameworks */,
 				BB16EBD90F2B2AB500518274 /* QuartzCore.framework in Frameworks */,
 				BBE5EAB80F49AD8400F28951 /* AudioToolbox.framework in Frameworks */,
+				5378362018AAF4FD00137F85 /* libACE.a in Frameworks */,
 				53F323EB10A20EDB00E0DAE4 /* OpenAL.framework in Frameworks */,
 				5326AEA810A23A0500278DE6 /* CoreLocation.framework in Frameworks */,
+				5378362218AAF4FD00137F85 /* libYARP_OS.a in Frameworks */,
 				E4A823A412561BE3002F86A2 /* CoreGraphics.framework in Frameworks */,
 				E41D400B13B39D2100A75A5D /* AVFoundation.framework in Frameworks */,
 				E41D400C13B39D2100A75A5D /* CoreMedia.framework in Frameworks */,
@@ -174,6 +186,7 @@
 				678E130B1795153C005B6D19 /* Default.png */,
 				678E130D17951540005B6D19 /* Default@2x.png */,
 				678E130F17951549005B6D19 /* Default-568h@2x~iphone.png */,
+				E41D3ED613B38FB500A75A5D /* Project.xcconfig */,
 				E4D8936A11527B74007E1F53 /* src */,
 				BB24E1F710DAA51900E9C588 /* openFrameworks */,
 				BB16F26B0F2B646B00518274 /* addons */,
@@ -277,6 +290,10 @@
 		BB16E9930F2B1E5900518274 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				532A1F1118AB00B20061291D /* libc++.dylib */,
+				5378361D18AAF4FD00137F85 /* libACE.a */,
+				5378361E18AAF4FD00137F85 /* libYARP_init.a */,
+				5378361F18AAF4FD00137F85 /* libYARP_OS.a */,
 				BBE5E94E0F497BD800F28951 /* core */,
 			);
 			name = libs;
@@ -298,7 +315,6 @@
 				32CA4F630368D1EE00C91783 /* ofxiOS_Prefix.pch */,
 				BB24DDC910DA781C00E9C588 /* ofxiOS-Info.plist */,
 				E41D3EE513B3906D00A75A5D /* CoreOF.xcconfig */,
-				E41D3ED613B38FB500A75A5D /* Project.xcconfig */,
 			);
 			name = openFrameworks;
 			sourceTree = "<group>";
@@ -410,6 +426,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0460;
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB54 = {
+						DevelopmentTeam = LZN89SNXCL;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ofxIOSDeviceMotionExample" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -519,10 +540,33 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ofxiOS_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../../../addons/ofxIOSDeviceMotion/libs,
+					../../../addons/ofxIOSDeviceMotion/src,
+					../../../addons/ofxOsc/libs,
+					../../../addons/ofxOsc/libs/oscpack,
+					../../../addons/ofxOsc/libs/oscpack/src,
+					../../../addons/ofxOsc/libs/oscpack/src/ip,
+					../../../addons/ofxOsc/libs/oscpack/src/ip/posix,
+					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
+					../../../addons/ofxOsc/libs/oscpack/src/osc,
+					../../../addons/ofxOsc/src,
+					"$(ACE_ROOT)",
+					"$(YARP_DIR)/src/libYARP_OS/include",
+					"$(YARP_DIR)/generated_include",
+				);
 				INFOPLIST_FILE = "ofxiOS-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../lib",
+					"$(inherited)",
+				);
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv6 armv7";
 			};
 			name = Debug;
@@ -530,10 +574,33 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ofxiOS_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					../../../addons/ofxIOSDeviceMotion/libs,
+					../../../addons/ofxIOSDeviceMotion/src,
+					../../../addons/ofxOsc/libs,
+					../../../addons/ofxOsc/libs/oscpack,
+					../../../addons/ofxOsc/libs/oscpack/src,
+					../../../addons/ofxOsc/libs/oscpack/src/ip,
+					../../../addons/ofxOsc/libs/oscpack/src/ip/posix,
+					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
+					../../../addons/ofxOsc/libs/oscpack/src/osc,
+					../../../addons/ofxOsc/src,
+					"$(ACE_ROOT)",
+					"$(YARP_DIR)/src/libYARP_OS/include",
+					"$(YARP_DIR)/generated_include",
+				);
 				INFOPLIST_FILE = "ofxiOS-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../lib",
+					"$(inherited)",
+				);
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv6 armv7";
 			};
 			name = Release;
