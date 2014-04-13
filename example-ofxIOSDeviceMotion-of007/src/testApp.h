@@ -118,7 +118,7 @@ public:
     void touchUp(ofTouchEventArgs & touch);
     void touchDoubleTap(ofTouchEventArgs & touch);
     void touchCancelled(ofTouchEventArgs & touch);
-
+    
     void lostFocus();
     void gotFocus();
     void gotMemoryWarning();
@@ -147,6 +147,9 @@ public:
     SimpleButton btnReset;
     SimpleButton btnShowInfo;
     SimpleButton btnShowHistory;
+    SimpleButton btnRate;
+    
+    int sendRateSkip = 1;
     
     float sampleRate;
     

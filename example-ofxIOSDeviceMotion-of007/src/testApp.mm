@@ -1,35 +1,37 @@
 #include "testApp.h"
 
 //--------------------------------------------------------------
-void testApp::setup(){	
+void testApp::setup(){
 	
     sampleRate = 60.0;
-    ipAddress = "192.168.1.83";
+    ipAddress = "10.0.1.14";
     ipPort = 6666;
     
-	//force landscape oreintation 
-	iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
+	//force landscape oreintation
+	ofSetOrientation(OF_ORIENTATION_90_RIGHT);
     
-//    motion.setUseDeviceMotion(false);
+    //    motion.setUseDeviceMotion(false);
     motion.setSampleRate(sampleRate);
     motion.start();
     
-//    ofSetFrameRate(sampleRate);
+    //    ofSetFrameRate(sampleRate);
     
     bShowInfo = false;
     bShowHistory = true;
     
     // setup simple buttons
-    float tSize = (float)ofGetHeight() / 3.0;
+    float tSize = (float)ofGetHeight() / 4.0;
     
     btnReset.setup(ofGetWidth() - tSize, tSize * 0, tSize, tSize, "reset");
     btnShowHistory.setup(ofGetWidth() - tSize, tSize * 1, tSize, tSize, "history");
     btnShowInfo.setup(ofGetWidth() - tSize, tSize * 2, tSize, tSize, "info");
+    btnRate.setup(ofGetWidth() - tSize, tSize * 3, tSize, tSize, "rate");
     btnRecord.setup(0, 0, tSize * 2, ofGetHeight(), "record");
+    
     
     btnReset.setToggle(true);
     btnRecord.setToggle(true);
-    
+    btnRate.setToggle(true);
     btnShowHistory.setState(true);
     
     // setup keyboard
@@ -50,7 +52,7 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
-
+    
     if(keyboard->isKeyboardShowing() && bOscIsSetup) bOscIsSetup = false;
     
     if(!keyboard->isKeyboardShowing() && !bOscIsSetup){
@@ -87,7 +89,7 @@ void testApp::update(){
         }else{ // if(ipPartsServer.size() == 1 || ipPartsServer.size() == 2){
             return;
         }
-
+        
     } // if(!keyboard->isKeyboardShowing() && !bOscIsSetup){
     
     if(!motion.getIsDataNew()) return;
@@ -97,13 +99,15 @@ void testApp::update(){
     ofPoint gravity = motion.getGravity();
     ofPoint attitude = motion.getAttitude();
     ofPoint uacceleration = motion.getAccelerationWithoutGravity();
-//    ofPoint iacceleration = motion.getAccelerationInstaneous();
+    //    ofPoint iacceleration = motion.getAccelerationInstaneous();
     
     if(bShowHistory){
         
-        if(accelerationHistory.size() == ofGetWidth()) accelerationHistory.clear();
-        if(rotationHistory.size() == ofGetWidth()) rotationHistory.clear();
-        if(attitudeHistory.size() == ofGetWidth()) attitudeHistory.clear();
+        float tSize = (float)ofGetHeight() / 3.0;
+        
+        if(accelerationHistory.size() > ofGetWidth() - (int)tSize) accelerationHistory.clear();
+        if(rotationHistory.size() > ofGetWidth() - (int)tSize) rotationHistory.clear();
+        if(attitudeHistory.size() > ofGetWidth() - (int)tSize) attitudeHistory.clear();
         
         accelerationHistory.push_back(uacceleration);
         rotationHistory.push_back(rotation);
@@ -142,6 +146,7 @@ void testApp::update(){
     m.addFloatArg(uacceleration.z);
     
     oscSender.sendMessage(m);
+    
 }
 
 //--------------------------------------------------------------
@@ -150,13 +155,8 @@ void testApp::draw(){
     btnReset.draw();
     btnShowHistory.draw();
     btnShowInfo.draw();
+    btnRate.draw();
     btnRecord.draw();
-    
-    if(btnShowHistory.getState()){
-        drawVector(0, (ofGetHeight() / 3.0f) * 0 + 30, 20, accelerationHistory, "acceleration");
-        drawVector(0, (ofGetHeight() / 3.0f) * 1 + 30, 20, rotationHistory, "rotation");
-        drawVector(0, (ofGetHeight() / 3.0f) * 2 + 30, 20, attitudeHistory, "attitude");
-    }
     
     if(btnShowInfo.getState()){
         
@@ -169,39 +169,58 @@ void testApp::draw(){
         
     }
     
+    if(btnShowHistory.getState()){
+        drawVector(0, (ofGetHeight() / 3.0f) * 0 + 30, 20, accelerationHistory, "acceleration");
+        drawVector(0, (ofGetHeight() / 3.0f) * 1 + 30, 20, rotationHistory, "rotation");
+        drawVector(0, (ofGetHeight() / 3.0f) * 2 + 30, 20, attitudeHistory, "attitude");
+    }
+    
 }
 
 //--------------------------------------------------------------
 void testApp::drawVector(float x, float y, float scale, vector<ofPoint> & vec, string label){
     if(vec.size() < 2) return;
+    
+    ofEnableSmoothing();
+    ofEnableAlphaBlending();
+    ofSetLineWidth(1.0f);
+    
+    ofMesh meshX;
+    ofMesh meshY;
+    ofMesh meshZ;
+    
+    meshX.setMode(OF_PRIMITIVE_LINE_STRIP);
+    meshY.setMode(OF_PRIMITIVE_LINE_STRIP);
+    meshZ.setMode(OF_PRIMITIVE_LINE_STRIP);
+    
     ofPushMatrix();
     ofTranslate(x, y);
     ofNoFill();
     ofSetColor(255, 255, 255);
+    
     ofDrawBitmapString(label, 20.0f, -20.0f);
-    for(int i = 0; i < vec.size() - 1; i++){
-        ofPushMatrix();
-        ofTranslate(0, scale * 0);
-        ofSetColor(255, 0, 0);
-        ofLine(i, vec[i].x * scale, i + 1, vec[i + 1].x * scale);
-        ofPopMatrix();
-        ofPushMatrix();
-        ofTranslate(0, scale * 1);
-        ofSetColor(0, 255, 0);
-        ofLine(i, vec[i].y * scale, i + 1, vec[i + 1].y * scale);
-        ofPopMatrix();
-        ofPushMatrix();
-        ofTranslate(0, scale * 2);
-        ofSetColor(0, 0, 255);
-        ofLine(i, vec[i].z * scale, i + 1, vec[i + 1].z * scale);
-        ofPopMatrix();
+    
+    for(int dx = 0; dx < vec.size() - 1; dx++){
+        meshX.addColor(ofColor(255,0,0));
+        meshX.addVertex(ofVec2f(dx + x, vec[dx].x * scale + y));
+        
+        meshY.addColor(ofColor(0,255,0));
+        meshY.addVertex(ofVec2f(dx + x, vec[dx].y * scale + y + scale));
+        
+        meshZ.addColor(ofColor(0,0,255));
+        meshZ.addVertex(ofVec2f(dx + x, vec[dx].z * scale + y + 2*scale));
     }
+    
     ofPopMatrix();
+    
+    meshX.draw();
+    meshY.draw();
+    meshZ.draw();
 }
 
 //--------------------------------------------------------------
 void testApp::exit(){
-
+    
 }
 
 //--------------------------------------------------------------
@@ -221,9 +240,11 @@ void testApp::touchDown(ofTouchEventArgs & touch){
     btnReset.mousePressed(touch.x, touch.y);
     btnShowHistory.mousePressed(touch.x, touch.y);
     btnShowInfo.mousePressed(touch.x, touch.y);
+    btnRate.mousePressed(touch.x, touch.y);
     btnRecord.mousePressed(touch.x, touch.y);
     
     if(btnRecord.getState()){
+        
         ofxOscMessage m;
         m.setAddress("/record");
         m.addIntArg(clientID);
@@ -235,7 +256,9 @@ void testApp::touchDown(ofTouchEventArgs & touch){
     }
     
     if(btnReset.getState()){
+        
         motion.calibrate();
+        
         ofxOscMessage m;
         m.setAddress("/reset");
         m.addIntArg(clientID);
@@ -243,27 +266,46 @@ void testApp::touchDown(ofTouchEventArgs & touch){
         m.addIntArg(SERVERTYPE_MATTG);
         m.addIntArg(ofGetElapsedTimeMillis());
         oscSender.sendMessage(m);
+        
+    }
+    
+    if (btnRate.getState()){
+        
+        sendRateSkip++;
+        
+        if(sendRateSkip > 4){
+            sendRateSkip = 1;
+        }
+        
+        printf("sendrateskip=%i\n", sendRateSkip);
+        
+        ofSetFrameRate(60/sendRateSkip);
+        motion.setSampleRate(60/sendRateSkip);
     }
 }
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs & touch){
-//    sampleRate =  60.0 * touch.y / (float)ofGetHeight();
-//    motion.setSampleRate(sampleRate);
-//    ofSetFrameRate(sampleRate);
+    //    sampleRate =  60.0 * touch.y / (float)ofGetHeight();
+    //    motion.setSampleRate(sampleRate);
+    //    ofSetFrameRate(sampleRate);
 }
 
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs & touch){
     
     bool bIsRecording = btnRecord.getState();
-
+    
     btnReset.mouseReleased(touch.x, touch.y);
     btnShowHistory.mouseReleased(touch.x, touch.y);
     btnShowInfo.mouseReleased(touch.x, touch.y);
     btnRecord.mouseReleased(touch.x, touch.y);
+    btnRate.mouseReleased(touch.x, touch.y);
+    
+    return; //ignore OSC
     
     if(bIsRecording && !btnRecord.getState()){
+        
         ofxOscMessage m;
         m.setAddress("/record");
         m.addIntArg(clientID);
@@ -272,13 +314,14 @@ void testApp::touchUp(ofTouchEventArgs & touch){
         m.addIntArg(ofGetElapsedTimeMillis());
         m.addIntArg(0);
         oscSender.sendMessage(m);
+        
     }
 }
 
 //--------------------------------------------------------------
 void testApp::touchDoubleTap(ofTouchEventArgs & touch){
-//    if(touch.x < ofGetWidth()/2.0f) bShowInfo = !bShowInfo;
-//    if(touch.x > ofGetWidth()/2.0f) bShowHistory = !bShowHistory;
+    //    if(touch.x < ofGetWidth()/2.0f) bShowInfo = !bShowInfo;
+    //    if(touch.x > ofGetWidth()/2.0f) bShowHistory = !bShowHistory;
 }
 
 //--------------------------------------------------------------
@@ -288,22 +331,22 @@ void testApp::touchCancelled(ofTouchEventArgs & touch){
 
 //--------------------------------------------------------------
 void testApp::lostFocus(){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::gotFocus(){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::gotMemoryWarning(){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::deviceOrientationChanged(int newOrientation){
-
+    
 }
 
 //--------------------------------------------------------------

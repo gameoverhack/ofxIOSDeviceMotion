@@ -5,8 +5,6 @@
 #include "ofxiPhoneExtras.h"
 #include "ofxIOSDeviceMotion.h"
 #include "ofxOsc.h"
-#include <yarp/os/impl/NameConfig.h>
-#include <yarp/os/all.h>
 
 #import <ifaddrs.h>
 #import <arpa/inet.h>
@@ -156,10 +154,5 @@ public:
     float sampleRate;
     
     ofxiPhoneKeyboard* keyboard;
-    
-    yarp::os::Network yarp;
-    yarp::os::BufferedPort<yarp::os::Bottle> port;
-    yarp::os::Bottle *output;
-    bool bYarpPortOpen;
     
 };
