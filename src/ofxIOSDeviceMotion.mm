@@ -81,74 +81,80 @@
     refAttitude = nil;
     NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
     if(self.deviceMotionAvailable && bUseDeviceMotion){
+        
         NSLog(@"Using Device Motion updates");
         
-        //johnty note: CMAttitudeReferenceFrameXArbitraryCorrectedZVertical ... works with iPhones (with magnetometers only! use the first line if using iTouch devices!
+        CMDeviceMotionHandler handler = ^(CMDeviceMotion *motionData, NSError *error){
+            if (error) {
+                [self stopDeviceMotionUpdates];
+                NSLog(@"Device Motion encountered error: %@", error);
+            } else {
+                
+                // store a reference attitude on start
+                if (refAttitude == nil) [self calibrate];
+                
+                // accelerometer (equivalent to CMAccelerometerData ie., includes gravity)
+                ofPoint & acceleration = self.parent->getAcceleration();
+                acceleration.x = motionData.userAcceleration.x + motionData.gravity.x;
+                acceleration.y = motionData.userAcceleration.y + motionData.gravity.y;
+                acceleration.z = motionData.userAcceleration.z + motionData.gravity.z;
+                
+                // gyro (equivalent to CMGyroData)
+                ofPoint & rotation = self.parent->getRotation();
+                rotation.x = motionData.rotationRate.x;
+                rotation.y = motionData.rotationRate.y;
+                rotation.z = motionData.rotationRate.z;
+                
+                // accelerometer WITHOUT gravity
+                ofPoint & uacceleration = self.parent->getAccelerationWithoutGravity();
+                uacceleration.x = motionData.userAcceleration.x;
+                uacceleration.y = motionData.userAcceleration.y;
+                uacceleration.z = motionData.userAcceleration.z;
+                
+                // EXPERIMENTAL: manual high-pass filter for instantaneous motion,
+                // from: http://disanji.net/iOS_Doc/#documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/MotionEvents/MotionEvents.html
+                
+                float kFilteringFactorInstant = 0.1f;
+                
+                ofPoint & iaccelaration = self.parent->getAccelerationInstaneous();
+                iaccelaration.x = uacceleration.x - ( (uacceleration.x * kFilteringFactorInstant) + (iaccelaration.x * (1.0 - kFilteringFactorInstant)) );
+                iaccelaration.y = uacceleration.y - ( (uacceleration.y * kFilteringFactorInstant) + (iaccelaration.y * (1.0 - kFilteringFactorInstant)) );
+                iaccelaration.z = uacceleration.z - ( (uacceleration.z * kFilteringFactorInstant) + (iaccelaration.z * (1.0 - kFilteringFactorInstant)) );
+                
+                // gravity vector
+                ofPoint & gravity = self.parent->getGravity();
+                gravity.x = motionData.gravity.x;
+                gravity.y = motionData.gravity.y;
+                gravity.z = motionData.gravity.z;
+                
+                // normalise attitude using initial reference
+                [motionData.attitude multiplyByInverseOfAttitude:refAttitude];
+                
+                // attitude (pitch, roll, yaw)
+                ofPoint & attitude = self.parent->getAttitude();
+                attitude.x = motionData.attitude.pitch;
+                attitude.y = motionData.attitude.roll;
+                attitude.z = motionData.attitude.yaw;
+                
+                // magnetometer
+                ofPoint & magnet = self.parent->getMagnetometer();
+                magnet.x = motionData.magneticField.field.x;
+                magnet.y = motionData.magneticField.field.y;
+                magnet.z = motionData.magneticField.field.z;
+                
+                self.parent->bIsDataNew = true;
+                self.parent->getTimeStampMillis() = ofGetElapsedTimeMillis();
+            }
+        };
         
-      [self startDeviceMotionUpdatesToQueue:queue withHandler:
-//        [self startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryCorrectedZVertical toQueue:[NSOperationQueue currentQueue] withHandler:
-         ^(CMDeviceMotion *motionData, NSError *error){
-             if (error) {
-                 [self stopDeviceMotionUpdates];
-                 NSLog(@"Device Motion encountered error: %@", error);
-             } else {
-                 
-                 // store a reference attitude on start
-                 if (refAttitude == nil) [self calibrate];
-                 
-                 // accelerometer (equivalent to CMAccelerometerData ie., includes gravity)
-                 ofPoint & acceleration = self.parent->getAcceleration();
-                 acceleration.x = motionData.userAcceleration.x + motionData.gravity.x;
-                 acceleration.y = motionData.userAcceleration.y + motionData.gravity.y;
-                 acceleration.z = motionData.userAcceleration.z + motionData.gravity.z;
-                 
-                 // gyro (equivalent to CMGyroData)
-                 ofPoint & rotation = self.parent->getRotation();
-                 rotation.x = motionData.rotationRate.x;
-                 rotation.y = motionData.rotationRate.y;
-                 rotation.z = motionData.rotationRate.z;
-                 
-                 // accelerometer WITHOUT gravity
-                 ofPoint & uacceleration = self.parent->getAccelerationWithoutGravity();
-                 uacceleration.x = motionData.userAcceleration.x;
-                 uacceleration.y = motionData.userAcceleration.y;
-                 uacceleration.z = motionData.userAcceleration.z;
-                 
-                 // EXPERIMENTAL: manual high-pass filter for instantaneous motion,
-                 // from: http://disanji.net/iOS_Doc/#documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/MotionEvents/MotionEvents.html
-                 
-                 float kFilteringFactorInstant = 0.1f;
-                 
-                 ofPoint & iaccelaration = self.parent->getAccelerationInstaneous();
-                 iaccelaration.x = uacceleration.x - ( (uacceleration.x * kFilteringFactorInstant) + (iaccelaration.x * (1.0 - kFilteringFactorInstant)) );
-                 iaccelaration.y = uacceleration.y - ( (uacceleration.y * kFilteringFactorInstant) + (iaccelaration.y * (1.0 - kFilteringFactorInstant)) );
-                 iaccelaration.z = uacceleration.z - ( (uacceleration.z * kFilteringFactorInstant) + (iaccelaration.z * (1.0 - kFilteringFactorInstant)) );
-                 
-                 // gravity vector
-                 ofPoint & gravity = self.parent->getGravity();
-                 gravity.x = motionData.gravity.x;
-                 gravity.y = motionData.gravity.y;
-                 gravity.z = motionData.gravity.z;
-                 
-                 // normalise attitude using initial reference
-                 [motionData.attitude multiplyByInverseOfAttitude:refAttitude];
-                 
-                 // attitude (pitch, roll, yaw)
-                 ofPoint & attitude = self.parent->getAttitude();
-                 attitude.x = motionData.attitude.pitch;
-                 attitude.y = motionData.attitude.roll;
-                 attitude.z = motionData.attitude.yaw;
-                 
-                 // magnetometer
-                 ofPoint & magnet = self.parent->getMagnetometer();
-                 magnet.x = motionData.magneticField.field.x;
-                 magnet.y = motionData.magneticField.field.y;
-                 magnet.z = motionData.magneticField.field.z;
-                 
-                 self.parent->bIsDataNew = true;
-                 self.parent->getTimeStampMillis() = ofGetElapsedTimeMillis();
-             }
-         }];
+        // CMAttitudeReferenceFrameXArbitraryCorrectedZVertical only works with IOS devices with magnetometers
+        if(self.isMagnetometerAvailable){
+            NSLog(@"Starting DeviceMotion updates with reference frame (CMAttitudeReferenceFrameXArbitraryCorrectedZVertical)");
+            [self startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryCorrectedZVertical toQueue:[NSOperationQueue currentQueue] withHandler:handler];
+        }else{
+            NSLog(@"Starting DeviceMotion updates without reference frame");
+            [self startDeviceMotionUpdatesToQueue:queue withHandler:handler];
+        }
         
     }else{
         
