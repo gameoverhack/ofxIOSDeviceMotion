@@ -149,11 +149,11 @@
         
         // CMAttitudeReferenceFrameXArbitraryCorrectedZVertical only works with IOS devices with magnetometers
         if(self.isMagnetometerAvailable){
-            NSLog(@"Starting DeviceMotion updates with reference frame (CMAttitudeReferenceFrameXArbitraryCorrectedZVertical)");
+            NSLog(@"Starting DeviceMotion updates with calibrated reference frame");
             [self startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryCorrectedZVertical toQueue:[NSOperationQueue currentQueue] withHandler:handler];
         }else{
-            NSLog(@"Starting DeviceMotion updates without reference frame");
-            [self startDeviceMotionUpdatesToQueue:queue withHandler:handler];
+            NSLog(@"Starting DeviceMotion updates with uncalibrated reference frame");
+            [self startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:[NSOperationQueue currentQueue] withHandler:handler];
         }
         
     }else{
